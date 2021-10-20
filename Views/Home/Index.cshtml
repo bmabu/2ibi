@@ -1,0 +1,187 @@
+﻿@model IEnumerable<WebApplication1.Models.country>
+
+@{
+    ViewBag.Title = "CSharp Dev Challenge | 2iBi";
+}
+
+
+<h2>C# Challenge by Benildo Mabunda</h2>
+
+
+<div class="form-horizontal">
+
+
+    <a class="btn btn-success" id="btnexportToExcel" onclick="toXLS()">Export To Excel</a>
+
+    <div class="form-group">
+        <table id="countryTBL" class="table table-responsive table-striped" style="width:400px">
+            <thead>
+                <tr>
+                    <th>
+                        Nome
+                    </th>
+                    <th>
+                        Capital
+                    </th>
+                    <th>
+                        Região
+                    </th>
+
+                    <th>
+                        Sub-região
+                    </th>
+                    <th>
+                        População
+                    </th>
+                    <th>
+                        Área
+                    </th>
+                    <th>
+                        Fuso horário
+                    </th>
+                    <th>
+                        Nome nativo
+                    </th>
+                    <th>
+                        Idiomas Oficiais
+                    </th>
+                    <th>
+                        Bandeira
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.capital)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.region)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.subregion)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.population)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.area)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.timezones[0])
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.nativeName)
+                        </td>
+                        <td>
+                            @{
+                                string lngug = "";
+                                for (int i = 0; i < item.languages.Count; i++)
+                                {
+                                    lngug = lngug + "["+ item.languages[i].name + "] ";
+                                }
+                            }
+                            @lngug
+                        </td>
+                        <td>
+                            <a href="@Html.DisplayFor(modelItem => item.flag )" target="_blank" rel="noopener noreferrer"><img src="@Html.DisplayFor(modelItem => item.flag )" style="width:100px;height:50px;" /></a>
+                        </td>
+                    </tr>
+
+
+                }
+            </tbody>
+
+        </table>
+    </div>
+
+
+
+</div>
+
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+
+
+@section scripts{
+
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#countryTBL').DataTable(
+                {
+                    //"processing": true,
+                    //"serverSide": true
+                }
+            );
+        });
+
+      
+        function toXLS() {
+
+            var nomes = new Array();
+            //info tb
+            var tabl = $('#countryTBL').DataTable();
+            //var info = tabl.page.info();
+            //tabl.rows({ search: 'applied' }).count()
+
+            var data = tabl.rows({ search: 'applied' }).data();
+            data.each(function (value, index) {
+              //  console.log(`For index ${index}, data value is ${value[2]}`);
+                nomes.push(value[0]);
+            });
+           // console.log(nomes);
+
+            $.ajax({
+                type: "Post",
+                url: "Home/GetByName",
+                data: JSON.stringify(nomes),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    console.log(response);
+                },
+                failure: function (response) {
+                    console.log(response);
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            });
+           // tabl.rows({ search: 'applied' }).data();
+           
+            //var data = tabl.rows({ search: 'applied' }).data();
+            //data.each(function (value, index) {
+            //    console.log(`For index ${index}, data value is ${value[2]}`);
+            //});
+
+
+
+            //var data = tabl.rows().data();
+            //data.each(function (value, index) {
+            //    console.log(`For index ${index}, data value is ${value}`);
+            //});
+            //table.on('draw', function () {
+            //    console.log('rows count:', table.rows({ search: 'applied' }).count());
+            //    console.log('page info:', table.page.info().recordsDisplay);
+            //});
+     
+        }
+
+    </script>
+
+   
+}
+
+
