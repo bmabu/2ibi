@@ -1,7 +1,18 @@
-﻿using System;
+﻿using ClosedXML.Excel;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+using WebApplication1.Models;
+using System.Xml;
+using System.Xml.Linq;
 using System.Linq;
-using System.Web;
+
 
 namespace WebApplication1.Models
 {
@@ -26,7 +37,7 @@ namespace WebApplication1.Models
         public string demonym { get; set; }
         public string [] borders { get; set; }
         public string numericCode { get; set; }
-        public dynamic currencies { get; set; }
+        public JArray currencies { get; set; }
         public dynamic languages { get; set; }
         public decimal gini { get; set; }
         public dynamic translations { get; set; }

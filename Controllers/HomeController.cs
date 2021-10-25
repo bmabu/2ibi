@@ -1,13 +1,19 @@
 ﻿using ClosedXML.Excel;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using WebApplication1.Models;
+using System.Xml;
+using System.Xml.Linq;
+using System.Linq;
+using CsvHelper;
 
 namespace WebApplication1.Controllers
 {
@@ -20,9 +26,10 @@ namespace WebApplication1.Controllers
         //{
         //    return View();
         //}
+
+        //I get all data from api to show in the view method with same name.
         public async Task<ActionResult> Index()
         {
-            ///
 
             List<country> CountryList = new List<country>();
             using (var client = new HttpClient())
@@ -32,56 +39,151 @@ namespace WebApplication1.Controllers
                 client.DefaultRequestHeaders.Clear();
                 //Define request data format
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                //Sending request to find web api REST service resource GetAllEmployees using HttpClient
+                //Sending request to find web api REST service resource using HttpClient
                 HttpResponseMessage Res = await client.GetAsync("all");
                 //Checking the response is successful or not which is sent using HttpClient
                 if (Res.IsSuccessStatusCode)
                 {
                     //Storing the response details recieved from web api
                     var CoResponse = Res.Content.ReadAsStringAsync().Result;
-                    //Deserializing the response recieved from web api and storing into the Employee list
+                    //Deserializing the response recieved from web api and storing into the country list
                     CountryList = JsonConvert.DeserializeObject<List<country>>(CoResponse);
                 }
-                //returning the employee list to view
+                //returning the countries list to view
                 return View(CountryList);
             }
-
-
-
         }
 
 
+        // This method |I used to return a json response that I can easly manipulate
+        //iT makes easy To test in the browser console
         public async Task<JsonResult> Contries()
         {
-            ///
-
             List<country> CountryList = new List<country>();
             using (var client = new HttpClient())
             {
-                //Passing service base url
                 client.BaseAddress = new Uri(Baseurl);
                 client.DefaultRequestHeaders.Clear();
-                //Define request data format
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                //Sending request to find web api REST service resource GetAllEmployees using HttpClient
                 HttpResponseMessage Res = await client.GetAsync("all");
-                //Checking the response is successful or not which is sent using HttpClient
                 if (Res.IsSuccessStatusCode)
                 {
-                    //Storing the response details recieved from web api
                     var CoResponse = Res.Content.ReadAsStringAsync().Result;
-                    //Deserializing the response recieved from web api and storing into the Employee list
                     CountryList = JsonConvert.DeserializeObject<List<country>>(CoResponse);
                 }
-                //returning the employee list to view
                 return Json(CountryList, JsonRequestBehavior.AllowGet);
             }
 
+        }
+
+        //data to CSV
+        // Instead of using an external package such as CSVHelper I prefered to make manuallly the csv file
+        
+        public void DownloadInCSV(List<country> nomes)
+        {
+            string path = Server.MapPath("~/Content/");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            var filenome = "ContriesInfo.csv";
+
+            var filePath = Path.Combine(path, filenome);
+
+            if (System.IO.File.Exists(filePath))
+            {
+                filePath = Path.Combine(path, "ContriesInfo" + RNumber().ToString() + ".csv");
+            }
+
+            
+            StreamWriter sw = new StreamWriter(filePath, false);
+            //headers  
+            sw.WriteLine("nome,capital,fronteirs");
+            //rows
+            for (int i = 0; i < nomes.Count; i++)
+            {
+                sw.WriteLine(removeComma(nomes[i].name)+","+ removeComma(nomes[i].capital)+","+ removeComma(Stringify_array(nomes[i].borders)));
+            }
+            
+            sw.Close();
+           
+            GetCSV(filePath);
 
 
         }
 
+        //as some contries can have comma in their information I removed all comma and put - to make csv
+        private string removeComma(string vlue)
+        {
+            string value = vlue;
+            if (vlue.Contains(','))
+            {
+                value = vlue.Replace(',', '-'); ;
+                
+            }
+            return value;
+        }
 
+
+        //I used the xml.ling to generate the xmlfile
+        public void DownloadInXML(List<country> nomes)
+        {
+
+            XDocument countriesDet = new XDocument(new XDeclaration("1.0", "UTF - 8", "yes"),
+            new XElement("Countries",
+            from item in nomes
+            select new XElement("Country",
+            new XElement("Nome", item.name),
+            new XElement("TopLevelDomains",
+            from it in item.topLevelDomain
+            select new XElement("TopLevelDomain", it)),
+            new XElement("alpha2Code", item.alpha2Code),
+            new XElement("alpha3Code", item.alpha3Code),
+            new XElement("callingCodes",
+            from c in item.callingCodes
+            select new XElement("callingCode", c)),
+            new XElement("capital", item.capital),
+            new XElement("altSpellings",
+            from sp in item.altSpellings
+            select new XElement("altSpelling", sp)),
+            new XElement("Region", item.region),
+            new XElement("population", item.population),
+            new XElement("Currencies",
+            new XElement("Currency", 
+            from cur in item.currencies
+            select 
+            new XAttribute("Code", cur["code"]),
+             from cur in item.currencies
+             select
+          new XAttribute("symbol", cur["symbol"]),
+             from cur in item.currencies
+             select
+               new XAttribute("name", cur["name"])
+            )))));
+
+            string path = Server.MapPath("~/Content/");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            var filenome = "ContriesInfo.xml";
+
+            var filePath = Path.Combine(path, filenome);
+
+            if (System.IO.File.Exists(filePath))
+            {
+                filePath = Path.Combine(path, "ContriesInfo" + RNumber().ToString() + ".xml");
+            }
+
+          
+
+            countriesDet.Save(filePath);
+            GetXML(filePath);
+
+
+        }
 
         public string DownloadInXLS(List<country> nomes)
         {
@@ -103,35 +205,51 @@ namespace WebApplication1.Controllers
             ws.Cell("B2").Style.Font.Bold = true;
             ws.Cell("B2").Style.Font.FontSize = 16;
             //ws.Range("B4:Y4").Style.Font.FontSize = 14;
-            ws.Cell("B4").Value = "Nome";
-            ws.Cell("C4").Value = "topLevelDomain";
-            ws.Cell("D4").Value = "alpha2Code";
-            ws.Cell("E4").Value = "alpha3Code";
-            ws.Cell("F4").Value = "callingCodes";
-            ws.Cell("G4").Value = "capital";
-            ws.Cell("H4").Value = "region";
-            ws.Cell("I4").Value = "subregion";
-            ws.Cell("J4").Value = "population";
-            ws.Cell("K4").Value = "area";
-            ws.Cell("L4").Value = "nativeName";
-            ws.Cell("M4").Value = "flag";
-            ws.Cell("N4").Value = "latlng";
-            ws.Cell("O4").Value = "altSpellings";
-            ws.Cell("P4").Value = "demonym";
-            ws.Cell("Q4").Value = "borders";
-            ws.Cell("R4").Value = "numericCode";
+
             ws.Cell("S4").Value = "currencies";
-            ws.Cell("T4").Value = "languages";
-            ws.Cell("U4").Value = "gini";
-            ws.Cell("V4").Value = "translations";
-            ws.Cell("X4").Value = "regionalBlocs";
-            ws.Cell("W4").Value = "cioc";
-            ws.Cell("Y4").Value = "TimeOne";
+            ws.Range(ws.Cell("S4"), ws.Cell("U4")).Merge();
+            ws.Range(ws.Cell("S4"), ws.Cell("U4")).Style.Fill.BackgroundColor = XLColor.YellowGreen;
+
+            ws.Cell("V4").Value = "languages";
+            ws.Range(ws.Cell("V4"), ws.Cell("Y4")).Merge();
+            ws.Range(ws.Cell("V4"), ws.Cell("Y4")).Style.Fill.BackgroundColor = XLColor.RedMunsell;
+
+
+            ws.Cell("B5").Value = "Nome";
+            ws.Cell("C5").Value = "topLevelDomain";
+            ws.Cell("D5").Value = "alpha2Code";
+            ws.Cell("E5").Value = "alpha3Code";
+            ws.Cell("F4").Value = "callingCodes";
+            ws.Cell("G5").Value = "capital";
+            ws.Cell("H5").Value = "region";
+            ws.Cell("I5").Value = "subregion";
+            ws.Cell("J5").Value = "population";
+            ws.Cell("K5").Value = "area";
+            ws.Cell("L5").Value = "nativeName";
+            ws.Cell("M5").Value = "flag";
+            ws.Cell("N5").Value = "latlng";
+            ws.Cell("O5").Value = "altSpellings";
+            ws.Cell("P5").Value = "demonym";
+            ws.Cell("Q5").Value = "borders";
+            ws.Cell("R5").Value = "numericCode";
+            ws.Cell("S5").Value = "code";
+            ws.Cell("T5").Value = "Name";
+            ws.Cell("U5").Value = "Symbol";
+            ws.Cell("V5").Value = "ISO369_1";
+            ws.Cell("W5").Value = "ISO369_2";
+            ws.Cell("X5").Value = "name";
+            ws.Cell("Y5").Value = "native name";
+            ws.Cell("Z5").Value = "gini";
+            ws.Cell("AA5").Value = "translations";
+            ws.Cell("AB5").Value = "regionalBlocs";
+            ws.Cell("AC5").Value = "cioc";
+            ws.Cell("AC5").Value = "Timeone";
+
 
 
             for (int i = 0; i < _cont.Count; i++)
             {
-                var row = i + 5;
+                var row = i + 6;
                 ws.Cell(row, 2).Value = checkif_ItsNull(_cont[i].name.ToString());
                 ws.Cell(row, 3).Value = Stringify_array(_cont[i].topLevelDomain);
                 ws.Cell(row, 4).Value = checkif_ItsNull(_cont[i].alpha2Code.ToString());
@@ -150,18 +268,27 @@ namespace WebApplication1.Controllers
                 ws.Cell(row, 16).Value = checkif_ItsNull(_cont[i].demonym.ToString());
                 ws.Cell(row, 17).Value = Stringify_array(_cont[i].borders);
                 ws.Cell(row, 18).Value = checkif_ItsNull( _cont[i].numericCode.ToString());
-                ws.Cell(row, 19).Value = _cont[i].currencies.ToString();
-                ws.Cell(row, 20).Value = Stringify_array(_cont[i].languages.ToString());
-                ws.Cell(row, 21).Value = checkif_ItsNull(_cont[i].gini.ToString());
-                ws.Cell(row, 22).Value = _cont[i].translations.ToString();
-                ws.Cell(row, 23).Value = _cont[i].regionalBlocs.ToString();
-                ws.Cell(row, 24).Value = Stringify_array(_cont[i].cioc.ToString());
 
-        }  
-            
+
+                // I get each value of a the object to property currencies
                 
-        
-        
+                ws.Cell(row, 19).Value = _cont[i].currencies[0]["code"].ToString();
+                ws.Cell(row, 20).Value = _cont[i].currencies[0]["name"].ToString();
+                ws.Cell(row, 21).Value = _cont[i].currencies[0]["symbol"].ToString();
+
+                // I get each value of a the object to property currencies
+                ws.Cell(row, 22).Value = _cont[i].languages[0]["iso639_1"].ToString();
+                ws.Cell(row, 23).Value = _cont[i].languages[0]["iso639_2"].ToString();
+                ws.Cell(row, 24).Value = _cont[i].languages[0]["name"].ToString();
+                ws.Cell(row, 25).Value = _cont[i].languages[0]["nativeName"].ToString();
+
+                ws.Cell(row, 26).Value = checkif_ItsNull(_cont[i].gini.ToString());
+               // ws.Cell(row, 27).Value = stringify_Object(_cont[i].translations);
+                //ws.Cell(row, 28).Value = Stringify_arrayOfObject( _cont[i].regionalBlocs);
+                ws.Cell(row, 29).Value = checkif_ItsNull(_cont[i].cioc.ToString());
+                ws.Cell(row, 29).Value = Stringify_array(_cont[i].timezones);
+
+            }  
             
             IXLRange range = ws.Range(ws.Cell("B2").Address, ws.Cell("W2").Address).Merge();
            
@@ -182,9 +309,43 @@ namespace WebApplication1.Controllers
           
             wb.SaveAs(filePath);
 
+            GetFile(filePath);
             return filePath;
         }
 
+
+        //to show in excel cell i prefered to make a object array as string
+
+        private string Stringify_arrayOfObject(dynamic resp) {
+
+            string ddos = "";
+
+            for (var b = 0; b < resp.Count; b++)
+            {
+                ddos = ddos + stringify_Object(resp[b]);
+            }
+
+            return ddos;
+
+         }
+
+
+
+        private string stringify_Object(dynamic resp)
+        {
+
+            string reply = "";
+
+            foreach (JProperty property in resp.Properties())
+            {
+                reply = reply + "[" + property.Name + ": " + property.Value.ToString() + "] ";
+                // ws.Cell("B4").Value = property.Value[1];
+            }
+
+            return reply;
+        }
+
+        //to generate a random number for document name
         private int RNumber()
         {
             Random rd = new Random();
@@ -221,20 +382,133 @@ namespace WebApplication1.Controllers
         }
 
 
-        private void GetFile(string filePath)
+        private string GetFile(string filePath)
         {
             Response.Clear();
-           // Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            Response.ContentType = "application/octet-stream";
+            // Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            //Response.ContentType = "application/octet-stream";
+            Response.ContentType = "application/force-download";
+            Response.ContentType = "application/vnd.ms-excel";
             Response.AddHeader("content-disposition", "attachment;filename=" + Path.GetFileName(filePath));
             Response.TransmitFile(Server.MapPath("~/Content/" + Path.GetFileName(filePath)));
             Response.WriteFile(filePath);
             //cleanup
             Response.Flush();
             Response.End();
+            return filePath;
           //  System.IO.File.Delete(filePath);
         }
 
+        private string GetXML(string filePath)
+        {
+            Response.Clear();
+            // Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            //Response.ContentType = "application/octet-stream";
+            Response.ContentType = "application/force-download";
+            Response.ContentType = "application/xml";
+            Response.AddHeader("content-disposition", "attachment;filename=" + Path.GetFileName(filePath));
+            Response.TransmitFile(Server.MapPath("~/Content/" + Path.GetFileName(filePath)));
+            Response.WriteFile(filePath);
+            //cleanup
+            Response.Flush();
+            Response.End();
+            return filePath;
+            //  System.IO.File.Delete(filePath);
+        }
+        private void GetCSV(string filePath)
+        {
+            Response.Clear();
+            Response.BufferOutput = true;
+            Response.ClearContent();
+            Response.ClearHeaders();
+            //Response.ContentType = "application/octet-stream";
+            Response.ContentType = @"application/csv";
+            Response.AddHeader("Content-Disposition", "attachment; filename=" + Path.GetFileName(filePath));
+            byte[] dt = System.IO.File.ReadAllBytes(filePath);
+            Response.OutputStream.Write(dt, 0, dt.Length);
+            //Response.TransmitFile(Server.MapPath("~/Content/" + Path.GetFileName(filePath)));
+            //Response.WriteFile(filePath);
+            //cleanup
+            Response.Flush();
+            Response.Close();
+           
+            //  System.IO.File.Delete(filePath);
+        }
+
+       //Metodos repetitivos p/buscr 
+        [HttpPost]
+        public async Task<JsonResult> GetByNameToCSV(string[] nomes)
+        {
+            ///
+
+            List<country> resp = new List<country>();
+
+            for (int i = 0; i < nomes.Length; i++)
+            {
+                List<country> CountryList = new List<country>();
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(Baseurl);
+                    client.DefaultRequestHeaders.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    HttpResponseMessage Res = await client.GetAsync("name/" + nomes[i] + "?fullText=true");
+                    if (Res.IsSuccessStatusCode)
+                    {
+                        var CoResponse = Res.Content.ReadAsStringAsync().Result;
+                        CountryList = JsonConvert.DeserializeObject<List<country>>(CoResponse);
+                    }
+
+                    resp.AddRange(CountryList);
+
+                }
+
+
+            }
+
+            DownloadInCSV(resp);
+
+
+         
+            return Json(resp, JsonRequestBehavior.AllowGet);
+
+
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GetByNameToXML(string[] nomes)
+        {
+            ///
+
+            List<country> resp = new List<country>();
+
+            for (int i = 0; i < nomes.Length; i++)
+            {
+                List<country> CountryList = new List<country>();
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(Baseurl);
+                    client.DefaultRequestHeaders.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                   
+                    HttpResponseMessage Res = await client.GetAsync("name/" + nomes[i] + "?fullText=true");
+                    if (Res.IsSuccessStatusCode)
+                    {
+                        var CoResponse = Res.Content.ReadAsStringAsync().Result;
+                        CountryList = JsonConvert.DeserializeObject<List<country>>(CoResponse);
+                    }
+
+                    resp.AddRange(CountryList);
+
+                }
+
+
+            }
+
+            DownloadInXML(resp);
+            return Json(resp, JsonRequestBehavior.AllowGet);
+
+
+        }
 
         [HttpPost]
         public async Task<JsonResult> GetByName(string[] nomes)
@@ -247,19 +521,15 @@ namespace WebApplication1.Controllers
                 List<country> CountryList = new List<country>();
                 using (var client = new HttpClient())
                 {
-                    //Passing service base url
+
+
                     client.BaseAddress = new Uri(Baseurl);
                     client.DefaultRequestHeaders.Clear();
-                    //Define request data format
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    //Sending request to find web api REST service resource GetAllEmployees using HttpClient
                     HttpResponseMessage Res = await client.GetAsync("name/" + nomes[i]+"?fullText=true");
-                    //Checking the response is successful or not which is sent using HttpClient
                     if (Res.IsSuccessStatusCode)
                     {
-                        //Storing the response details recieved from web api
                         var CoResponse = Res.Content.ReadAsStringAsync().Result;
-                        //Deserializing the response recieved from web api and storing into the Employee list
                         CountryList = JsonConvert.DeserializeObject<List<country>>(CoResponse);
                     }
 
@@ -271,10 +541,9 @@ namespace WebApplication1.Controllers
             }
 
             DownloadInXLS(resp);
+         
 
-            //returning the employee list to view
             return Json(resp, JsonRequestBehavior.AllowGet);
-            // return resp.ToList();
 
 
         }

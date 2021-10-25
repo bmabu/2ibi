@@ -1,0 +1,114 @@
+﻿@model IEnumerable<WebApplication1.Models.country>
+
+@{
+    ViewBag.Title = "CSharp Dev Challenge | 2iBi";
+}
+
+<h2>View</h2>
+
+@*<p>
+    @Html.ActionLink("Create New", "Create")
+</p>*@
+
+<div class="form-horizontal">
+
+    <hr />
+    <div class="form-group">
+        <table class="table table-responsive" style="width:400px">
+            <tr>
+                <th>
+                    Nome
+                </th>
+                <th>
+                    Capital
+                </th>
+                <th>
+                    Região
+                </th>
+                <th>
+                    Capital
+                </th>
+                <th>
+                    Sub-região
+                </th>
+                <th>
+                    População
+                </th>
+                <th>
+                    Área
+                </th>
+                <th>
+                    Fuso horário
+                </th>
+                <th>
+                    Nome nativo
+                </th>
+                <th>
+                    Flag
+                </th>
+            </tr>
+            @foreach (var item in Model)
+            {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.capital)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.region)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.subregion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.population)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.area)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.timezones)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.nativeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.flag)
+            </td>
+        </tr>
+            }
+        </table>
+    </div>
+
+
+
+</div>
+
+@*<table class="table">
+    <tr>
+        <th><div class="form-horizontal">
+    <hr />
+    <div class="form-group">
+        <table class="table table-responsive" style="width:400px">
+            <tr>
+
+
+</th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+        </td>
+    </tr>
+}
+
+</table>*@

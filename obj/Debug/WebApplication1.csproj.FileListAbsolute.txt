@@ -141,3 +141,13 @@ D:\DevBenildo\DevChallenge\WebApplication1\bin\itext.sign.xml
 D:\DevBenildo\DevChallenge\WebApplication1\bin\itext.styledxmlparser.xml
 D:\DevBenildo\DevChallenge\WebApplication1\bin\itext.svg.xml
 D:\DevBenildo\DevChallenge\WebApplication1\bin\Microsoft.IO.RecyclableMemoryStream.xml
+D:\DevBenildo\DevChallenge\WebApplication1\bin\CsvHelper.dll
+D:\DevBenildo\DevChallenge\WebApplication1\bin\System.Buffers.dll
+D:\DevBenildo\DevChallenge\WebApplication1\bin\System.Memory.dll
+D:\DevBenildo\DevChallenge\WebApplication1\bin\System.Runtime.CompilerServices.Unsafe.dll
+D:\DevBenildo\DevChallenge\WebApplication1\bin\System.ValueTuple.dll
+D:\DevBenildo\DevChallenge\WebApplication1\bin\CsvHelper.xml
+D:\DevBenildo\DevChallenge\WebApplication1\bin\System.Buffers.xml
+D:\DevBenildo\DevChallenge\WebApplication1\bin\System.Memory.xml
+D:\DevBenildo\DevChallenge\WebApplication1\bin\System.Runtime.CompilerServices.Unsafe.xml
+D:\DevBenildo\DevChallenge\WebApplication1\bin\System.ValueTuple.xml
