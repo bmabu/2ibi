@@ -151,3 +151,5 @@ D:\DevBenildo\DevChallenge\WebApplication1\bin\System.Buffers.xml
 D:\DevBenildo\DevChallenge\WebApplication1\bin\System.Memory.xml
 D:\DevBenildo\DevChallenge\WebApplication1\bin\System.Runtime.CompilerServices.Unsafe.xml
 D:\DevBenildo\DevChallenge\WebApplication1\bin\System.ValueTuple.xml
+D:\DevBenildo\DevChallenge\WebApplication1\obj\Debug\WebApplication1.Properties.Resources.resources
+D:\DevBenildo\DevChallenge\WebApplication1\obj\Debug\WebApplication1.csproj.GenerateResource.cache

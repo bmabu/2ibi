@@ -5,14 +5,14 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <_PublishTargetUrl>D:\DevBenildo\Publicados</_PublishTargetUrl>
-    <History>True|2021-10-25T09:10:52.7462236Z;True|2021-10-25T09:49:53.6278973+02:00;</History>
+    <History>True|2021-10-29T14:47:07.7327542Z;False|2021-10-29T16:40:21.2157637+02:00;False|2021-10-29T16:39:49.3014770+02:00;False|2021-10-29T16:25:02.8383012+02:00;True|2021-10-27T14:12:26.2613908+02:00;True|2021-10-25T11:10:52.7462236+02:00;True|2021-10-25T09:49:53.6278973+02:00;</History>
   </PropertyGroup>
   <ItemGroup>
     <File Include="bin/App_global.asax.compiled">
-      <publishTime>10/25/2021 11:09:01</publishTime>
+      <publishTime>10/29/2021 16:46:28</publishTime>
     </File>
     <File Include="bin/App_global.asax.dll">
-      <publishTime>10/25/2021 11:08:53</publishTime>
+      <publishTime>10/29/2021 16:46:26</publishTime>
     </File>
     <File Include="bin/BouncyCastle.Crypto.dll">
       <publishTime>12/17/2020 23:32:28</publishTime>
@@ -198,10 +198,10 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>11/28/2018 13:04:24</publishTime>
     </File>
     <File Include="bin/WebApplication1.dll">
-      <publishTime>10/25/2021 11:07:05</publishTime>
+      <publishTime>10/29/2021 16:44:20</publishTime>
     </File>
     <File Include="bin/WebApplication1.pdb">
-      <publishTime>10/25/2021 11:07:05</publishTime>
+      <publishTime>10/29/2021 16:44:20</publishTime>
     </File>
     <File Include="Content/bootstrap-grid.css">
       <publishTime>10/08/2021 10:05:50</publishTime>
@@ -306,7 +306,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>08/17/2021 13:09:50</publishTime>
     </File>
     <File Include="PrecompiledApp.config">
-      <publishTime>10/25/2021 11:07:43</publishTime>
+      <publishTime>10/29/2021 16:44:36</publishTime>
     </File>
     <File Include="Scripts/bootstrap.bundle.js">
       <publishTime>10/08/2021 10:05:38</publishTime>
@@ -363,7 +363,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>10/08/2021 10:34:06</publishTime>
     </File>
     <File Include="Views/Home/Index.cshtml">
-      <publishTime>10/25/2021 08:32:06</publishTime>
+      <publishTime>10/27/2021 21:48:38</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
       <publishTime>10/12/2021 11:08:09</publishTime>
@@ -378,7 +378,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>08/17/2021 15:09:46</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>10/25/2021 11:07:13</publishTime>
+      <publishTime>10/27/2021 14:09:02</publishTime>
     </File>
   </ItemGroup>
 </Project>

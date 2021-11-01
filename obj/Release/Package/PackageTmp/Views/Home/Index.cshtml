@@ -143,16 +143,21 @@
                 //  console.log(`For index ${index}, data value is ${value[2]}`);
                 nomes.push(value[0]);
             });
-            // console.log(nomes);
+            var typeDoc = "excel";
+            var data = { nomes, typeDoc };
 
             $.ajax({
                 type: "Post",
                 url: "Home/GetByName",
-                data: JSON.stringify(nomes),
+                data: JSON.stringify(data),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (response) {
-                    console.log(response);
+                    //console.log(response);
+                    let confirmAction = confirm("File created with success! Do you want to download?");
+                    if (confirmAction) {
+                        window.location.assign('Home/GetFile?filePath=' + response);
+                    }
                 },
                 failure: function (response) {
                     console.log(response);
@@ -194,16 +199,21 @@
                 //  console.log(`For index ${index}, data value is ${value[2]}`);
                 nomes.push(value[0]);
             });
-            // console.log(nomes);
+            var typeDoc = "xml";
+            var data = { nomes, typeDoc };
 
             $.ajax({
                 type: "Post",
-                url: "Home/GetByNameToXML",
-                data: JSON.stringify(nomes),
+                url: "Home/GetByName",
+                data: JSON.stringify(data),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (response) {
-                    console.log(response);
+                    //console.log(response);
+                    let confirmAction = confirm("File created with success! Do you want to download?");
+                    if (confirmAction) {
+                        window.location.assign('Home/GetFile?filePath=' + response);
+                    }
                 },
                 failure: function (response) {
                     console.log(response);
@@ -242,19 +252,28 @@
 
             var data = tabl.rows({ search: 'applied' }).data();
             data.each(function (value, index) {
-               
+
                 nomes.push(value[0]);
             });
-            // console.log(nomes);
+            var typeDoc = "csv";
+            var data = { nomes, typeDoc };
 
             $.ajax({
                 type: "Post",
-                url: "Home/GetByNameToCSV",
-                data: JSON.stringify(nomes),
+                url: "Home/GetByName",
+                data: JSON.stringify(data),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (response) {
-                    console.log(response);
+                    //console.log(response);
+                let confirmAction = confirm("File created with success! Do you want to download?");
+                    if (confirmAction) {
+                        //var filePath = response;
+                        //GetFile(filePath);
+                        window.location.assign('Home/GetFile?filePath=' + response);
+                    }
+                  
+
                 },
                 failure: function (response) {
                     console.log(response);
@@ -283,6 +302,17 @@
 
         }
 
+        function GetFile(filePathh) {
+            //var filePath = new Array();
+            //filePath.push(filePathh);
+             $.ajax({
+                 type: "get",
+                 @*url: '@Url.Action("GetCSV", "Home")' + '?filePath=' + response,*@
+                 url: "Home/GetCSV",
+                 data: JSON.stringify(filePath),
+                 async: false
+              });
+        }
     </script>
 
 

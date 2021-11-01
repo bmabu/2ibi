@@ -98,3 +98,5 @@ D:\DevBenildo\DevChallenge\WebApplication1\obj\Release\WebApplication1.csproj.Co
 D:\DevBenildo\DevChallenge\WebApplication1\obj\Release\WebApplication1.csproj.CopyComplete
 D:\DevBenildo\DevChallenge\WebApplication1\obj\Release\WebApplication1.dll
 D:\DevBenildo\DevChallenge\WebApplication1\obj\Release\WebApplication1.pdb
+D:\DevBenildo\DevChallenge\WebApplication1\obj\Release\WebApplication1.Properties.Resources.resources
+D:\DevBenildo\DevChallenge\WebApplication1\obj\Release\WebApplication1.csproj.GenerateResource.cache
