@@ -253,10 +253,10 @@ namespace WebApplication1.Controllers
 
 
             ws.Cell("B5").Value = "Nome";
-            ws.Cell("C5").Value = "topLevelDomain";
+            ws.Cell("C5").Value = "TopLevelDomain";
             ws.Cell("D5").Value = "alpha2Code";
             ws.Cell("E5").Value = "alpha3Code";
-            ws.Cell("F4").Value = "callingCodes";
+            ws.Cell("F5").Value = "callingCodes";
             ws.Cell("G5").Value = "capital";
             ws.Cell("H5").Value = "region";
             ws.Cell("I5").Value = "subregion";
