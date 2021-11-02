@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Countries>
+  <Country>
+    <Nome>Mozambique</Nome>
+    <TopLevelDomains>
+      <TopLevelDomain>.mz</TopLevelDomain>
+    </TopLevelDomains>
+    <alpha2Code>MZ</alpha2Code>
+    <alpha3Code>MOZ</alpha3Code>
+    <callingCodes>
+      <callingCode>258</callingCode>
+    </callingCodes>
+    <capital>Maputo</capital>
+    <altSpellings>
+      <altSpelling>MZ</altSpelling>
+      <altSpelling>Republic of Mozambique</altSpelling>
+      <altSpelling>República de Moçambique</altSpelling>
+    </altSpellings>
+    <Region>Africa</Region>
+    <population>31255435</population>
+    <Currencies>
+      <Currency Code="MZN" symbol="MT" name="Mozambican metical" />
+    </Currencies>
+  </Country>
+</Countries>
