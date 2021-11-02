@@ -12,6 +12,8 @@
 
 
     <a class="btn btn-success" id="btnexportToExcel" onclick="toXLS()">Export To Excel</a>
+    <a class="btn btn-success" id="btnexportToExcel" onclick="toXML()">Export To XML</a>
+    <a class="btn btn-success" id="btnexportToExcel" onclick="toCSV()">Export To CSV</a>
 
     <div class="form-group">
         <table id="countryTBL" class="table table-responsive table-striped" style="width:400px">
@@ -84,7 +86,7 @@
                                 string lngug = "";
                                 for (int i = 0; i < item.languages.Count; i++)
                                 {
-                                    lngug = lngug + "["+ item.languages[i].name + "] ";
+                                    lngug = lngug + "[" + item.languages[i].name + "] ";
                                 }
                             }
                             @lngug
@@ -127,7 +129,7 @@
             );
         });
 
-      
+
         function toXLS() {
 
             var nomes = new Array();
@@ -138,19 +140,24 @@
 
             var data = tabl.rows({ search: 'applied' }).data();
             data.each(function (value, index) {
-              //  console.log(`For index ${index}, data value is ${value[2]}`);
+                //  console.log(`For index ${index}, data value is ${value[2]}`);
                 nomes.push(value[0]);
             });
-           // console.log(nomes);
+            var typeDoc = "excel";
+            var data = { nomes, typeDoc };
 
             $.ajax({
                 type: "Post",
                 url: "Home/GetByName",
-                data: JSON.stringify(nomes),
+                data: JSON.stringify(data),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (response) {
-                    console.log(response);
+                    //console.log(response);
+                    let confirmAction = confirm("File created with success! Do you want to download?");
+                    if (confirmAction) {
+                        window.location.assign('Home/GetFile?filePath=' + response);
+                    }
                 },
                 failure: function (response) {
                     console.log(response);
@@ -159,8 +166,8 @@
                     console.log(response);
                 }
             });
-           // tabl.rows({ search: 'applied' }).data();
-           
+            // tabl.rows({ search: 'applied' }).data();
+
             //var data = tabl.rows({ search: 'applied' }).data();
             //data.each(function (value, index) {
             //    console.log(`For index ${index}, data value is ${value[2]}`);
@@ -176,12 +183,138 @@
             //    console.log('rows count:', table.rows({ search: 'applied' }).count());
             //    console.log('page info:', table.page.info().recordsDisplay);
             //});
-     
+
         }
 
+        function toXML() {
+
+            var nomes = new Array();
+            //info tb
+            var tabl = $('#countryTBL').DataTable();
+            //var info = tabl.page.info();
+            //tabl.rows({ search: 'applied' }).count()
+
+            var data = tabl.rows({ search: 'applied' }).data();
+            data.each(function (value, index) {
+                //  console.log(`For index ${index}, data value is ${value[2]}`);
+                nomes.push(value[0]);
+            });
+            var typeDoc = "xml";
+            var data = { nomes, typeDoc };
+
+            $.ajax({
+                type: "Post",
+                url: "Home/GetByName",
+                data: JSON.stringify(data),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    //console.log(response);
+                    let confirmAction = confirm("File created with success! Do you want to download?");
+                    if (confirmAction) {
+                        window.location.assign('Home/GetFile?filePath=' + response);
+                    }
+                },
+                failure: function (response) {
+                    console.log(response);
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            });
+            // tabl.rows({ search: 'applied' }).data();
+
+            //var data = tabl.rows({ search: 'applied' }).data();
+            //data.each(function (value, index) {
+            //    console.log(`For index ${index}, data value is ${value[2]}`);
+            //});
+
+
+
+            //var data = tabl.rows().data();
+            //data.each(function (value, index) {
+            //    console.log(`For index ${index}, data value is ${value}`);
+            //});
+            //table.on('draw', function () {
+            //    console.log('rows count:', table.rows({ search: 'applied' }).count());
+            //    console.log('page info:', table.page.info().recordsDisplay);
+            //});
+
+        }
+
+        function toCSV() {
+
+            var nomes = new Array();
+            //info tb
+            var tabl = $('#countryTBL').DataTable();
+            //var info = tabl.page.info();
+            //tabl.rows({ search: 'applied' }).count()
+
+            var data = tabl.rows({ search: 'applied' }).data();
+            data.each(function (value, index) {
+
+                nomes.push(value[0]);
+            });
+            var typeDoc = "csv";
+            var data = { nomes, typeDoc };
+
+            $.ajax({
+                type: "Post",
+                url: "Home/GetByName",
+                data: JSON.stringify(data),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (response) {
+                    //console.log(response);
+                let confirmAction = confirm("File created with success! Do you want to download?");
+                    if (confirmAction) {
+                        //var filePath = response;
+                        //GetFile(filePath);
+                        window.location.assign('Home/GetFile?filePath=' + response);
+                    }
+                  
+
+                },
+                failure: function (response) {
+                    console.log(response);
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            });
+            // tabl.rows({ search: 'applied' }).data();
+
+            //var data = tabl.rows({ search: 'applied' }).data();
+            //data.each(function (value, index) {
+            //    console.log(`For index ${index}, data value is ${value[2]}`);
+            //});
+
+
+
+            //var data = tabl.rows().data();
+            //data.each(function (value, index) {
+            //    console.log(`For index ${index}, data value is ${value}`);
+            //});
+            //table.on('draw', function () {
+            //    console.log('rows count:', table.rows({ search: 'applied' }).count());
+            //    console.log('page info:', table.page.info().recordsDisplay);
+            //});
+
+        }
+
+        function GetFile(filePathh) {
+            //var filePath = new Array();
+            //filePath.push(filePathh);
+             $.ajax({
+                 type: "get",
+                 @*url: '@Url.Action("GetCSV", "Home")' + '?filePath=' + response,*@
+                 url: "Home/GetCSV",
+                 data: JSON.stringify(filePath),
+                 async: false
+              });
+        }
     </script>
 
-   
-}
 
+}
 
