@@ -11,9 +11,10 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using WebApplication1.Models;
 using System.Xml;
+using System.Xml.Serialization;
 using System.Xml.Linq;
 using System.Linq;
-
+using System.Text.RegularExpressions;
 
 namespace WebApplication1.Controllers
 {
@@ -86,6 +87,8 @@ namespace WebApplication1.Controllers
              string fullPath = Path.Combine(Server.MapPath("~/Donwnloded"), filePath);
           
             return File(fullPath, System.Net.Mime.MediaTypeNames.Application.Octet, filePath);
+
+          
         }
 
         //Metodos repetitivos p/buscr 
@@ -130,7 +133,7 @@ namespace WebApplication1.Controllers
 
         public string MakeCSV(List<country> nomes)
         {
-            string path = Server.MapPath("~/Donwnloded");
+            string path = Server.MapPath("~/Donwnloded/");
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
@@ -149,11 +152,24 @@ namespace WebApplication1.Controllers
 
             StreamWriter sw = new StreamWriter(filePath, false);
             //headers  
-            sw.WriteLine("nome,capital,fronteirs");
+            sw.WriteLine("nome,capital,fronteiras");
             //rows
             for (int i = 0; i < nomes.Count; i++)
             {
-                sw.WriteLine(fm.removeComma(nomes[i].name) + "," + fm.removeComma(nomes[i].capital) + "," + fm.removeComma(fm.Stringify_array(nomes[i].borders)));
+                var nome = "";
+                var capital = "";
+                var borders = "";
+
+                if (fm.checkif_ItsNull(nomes[i].name) != "***")
+                   nome = fm.removeComma(nomes[i].name);
+                if (fm.checkif_ItsNull(nomes[i].capital) != "***")
+                    capital = fm.removeComma(nomes[i].capital);
+
+                //Evita o erro de null value (Chrome console)
+               // if (nomes[i].borders.Length > 0 )
+                    borders = fm.removeComma(fm.Stringify_array(nomes[i].borders));
+
+                sw.WriteLine( nome+ "," + capital + "," + borders);
             }
 
             sw.Close();
@@ -169,33 +185,36 @@ namespace WebApplication1.Controllers
             new XElement("Countries",
             from item in nomes
             select new XElement("Country",
-            new XElement("Nome", item.name),
+             new XAttribute("Name", item.name),
+           // new XAttribute("Cioc", item.cioc.ToString()),
+               new XElement("capital", fm.checkif_ItsNull(item.capital)),
             new XElement("TopLevelDomains",
             from it in item.topLevelDomain
             select new XElement("TopLevelDomain", it)),
-            new XElement("alpha2Code", item.alpha2Code),
-            new XElement("alpha3Code", item.alpha3Code),
+            new XElement("alpha2Code", fm.checkif_ItsNull(item.alpha2Code.ToString())),
+            new XElement("alpha3Code", fm.checkif_ItsNull(item.alpha3Code.ToString())),
             new XElement("callingCodes",
             from c in item.callingCodes
             select new XElement("callingCode", c)),
-            new XElement("capital", item.capital),
             new XElement("altSpellings",
             from sp in item.altSpellings
             select new XElement("altSpelling", sp)),
-            new XElement("Region", item.region),
-            new XElement("population", item.population),
+            new XElement("Region", fm.checkif_ItsNull( item.region)),
+            new XElement("population", fm.checkif_ItsNull( item.population.ToString())),
             new XElement("Currencies",
-            new XElement("Currency",
             from cur in item.currencies
-            select
-            new XAttribute("Code", cur["code"]),
-             from cur in item.currencies
-             select
+            select new XElement("Currency",
+           // from cur in item.currencies
+            //select
+            new XAttribute("Code", fm.checkif_ItsNull(cur["code"].ToString())),
+           //  from cur in item.currencies
+            // select
           new XAttribute("symbol", cur["symbol"]),
-             from cur in item.currencies
-             select
-               new XAttribute("name", cur["name"])
+           //  from cur in item.currencies
+           //  select
+               new XAttribute("name", fm.checkif_ItsNull(cur["name"].ToString()))
             )))));
+
 
             string path = Server.MapPath("~/Donwnloded/");
             if (!Directory.Exists(path))
@@ -213,8 +232,6 @@ namespace WebApplication1.Controllers
                 filenome = "ContriesInfo" + fm.RNumber().ToString() + ".xml";
                 filePath = Path.Combine(path, filenome);
             }
-
-
 
             countriesDet.Save(filePath);
             return filenome;
@@ -251,7 +268,9 @@ namespace WebApplication1.Controllers
             ws.Range(ws.Cell("V4"), ws.Cell("Y4")).Merge();
             ws.Range(ws.Cell("V4"), ws.Cell("Y4")).Style.Fill.BackgroundColor = XLColor.RedMunsell;
 
-
+            ws.Range(ws.Cell("B5"), ws.Cell("AC5")).Style.Font.Bold = true;
+            ws.Range(ws.Cell("B5"), ws.Cell("AC5")).Style.Font.Italic = true;
+            ws.Range(ws.Cell("B5"), ws.Cell("AC5")).Style.Font.FontSize = 14;
             ws.Cell("B5").Value = "Nome";
             ws.Cell("C5").Value = "TopLevelDomain";
             ws.Cell("D5").Value = "alpha2Code";

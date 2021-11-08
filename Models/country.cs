@@ -12,7 +12,7 @@ using WebApplication1.Models;
 using System.Xml;
 using System.Xml.Linq;
 using System.Linq;
-
+using System.Xml.Serialization;
 
 namespace WebApplication1.Models
 {
@@ -48,6 +48,6 @@ namespace WebApplication1.Models
     {
         public string fileName { get; set; }
 
-
     }
+   
 }

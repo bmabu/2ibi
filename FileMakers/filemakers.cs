@@ -39,7 +39,7 @@ namespace WebApplication1.FileMakers
 
         public string checkif_ItsNull(string text)
         {
-            string t = "";
+            string t = "***";
             if (text != null)
             {
                 if (String.IsNullOrEmpty(text) | String.IsNullOrWhiteSpace(text))
@@ -68,7 +68,7 @@ namespace WebApplication1.FileMakers
         public string stringify_Object(dynamic resp)
         {
 
-            string reply = "";
+            string reply = "*";
             if (resp != null)
             {
                 foreach (JProperty property in resp.Properties())
