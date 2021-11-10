@@ -1,10 +1,6 @@
 # CSharp-Dev-Challenge
 C# Dev Challenge by 2iBi
 
-
-Desafio concluído
-Mas, alguns países exportam com problemas porque não tem algumas propriedades como border(ilhas), cioc ou capital.
-
 # Inside de Project:
 
 1. Busca todos os países registados na API. Usei o datatables.net para apresentar as informações.
@@ -21,6 +17,12 @@ Clica no botão para exportar os dados no formato que precisar.
 Repositório:               https://github.com/bmabu/CSharp-Dev-Challenge.git
 
 hospedado em:         fam.bitsol-fleet.com
+
+
+#Contactos
+
+Telefone: 844576624
+Whatsapp: 878187178
 
 Meus perfis:
 Github:            https://github.com/bmabu
