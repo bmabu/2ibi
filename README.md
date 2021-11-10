@@ -19,11 +19,16 @@ Pesquisa pelo país que quer, a cada click do mouse vai recebendo os dados que c
 Clica no botão para exportar os dados no formato que precisar.
 
 Repositório:               https://github.com/bmabu/CSharp-Dev-Challenge.git
+
 hospedado em:         fam.bitsol-fleet.com
 
 Meus perfis:
 Github:            https://github.com/bmabu
+
 linkedin:           linkedin.com/in/benildo-mabunda-45a050b9
+
 Projectos:        www.bitsol-fleet.com (app para gestão de transportes)
+
 website:            About.me/benildomabunda
+
 instagram:       b_mabunda
